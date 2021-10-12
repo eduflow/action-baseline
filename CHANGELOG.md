@@ -11,6 +11,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - Disabled the automation framework while we investigate a problem with it.
 
+### Added
+ - An input (`artifact_name`) used to name the file that contains test results. [#45](https://github.com/zaproxy/action-baseline/issues/45)
+
 ## [0.5.0] - 2021-09-14
 ### Added
  - An input (`allow_issue_writing`) to choose if a GitHub issue should be raised or not. [#56](https://github.com/zaproxy/action-baseline/issues/56)
