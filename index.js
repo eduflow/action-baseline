@@ -33,6 +33,10 @@ async function run() {
             createIssue = false;
         }
 
+        if (!artifactName) {
+            console.log('[WARNING]: \'artifact_name\' action input should not be empty.');
+        }
+
         console.log('starting the program');
         console.log('github run id :' + currentRunnerID);
 
