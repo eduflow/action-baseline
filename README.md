@@ -38,10 +38,6 @@ Make sure to checkout the repository (actions/checkout@v2) to provide the ZAP ru
 **Optional** By default the baseline action will file the report to the GitHub issue using the `issue_title` input.
 Set this to false if you don't want the issue to be created or updated.
 
-### `artifact_name`
-
-**Optional** By default the baseline action will attach the report to the build with the name `zap_scan`. Set this to a different string to name it something else.
-
 ### `issue_title`
 
 **Optional** The title for the GitHub issue to be created
@@ -55,6 +51,10 @@ You do not have to create a dedicated token. Make sure to use the GitHub's defau
 
 **Optional** By default ZAP Docker container will fail with an [exit code](https://github.com/zaproxy/zaproxy/blob/efb404d38280dc9ecf8f88c9b0c658385861bdcf/docker/zap-baseline.py#L31), 
 if it identifies any alerts. Set this option to `true` if you want to fail the status of the GitHub Scan if ZAP identifies any alerts during the scan.  
+
+### `artifact_name`
+
+**Optional** By default the baseline action will attach the report to the build with the name `zap_scan`. Set this to a different string to name it something else. Consult [GitHub's documentation](https://github.com/actions/toolkit/blob/main/packages/artifact/docs/additional-information.md#non-supported-characters) for which artifact names are allowed.
 
 ## Example usage
 
