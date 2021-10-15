@@ -34,7 +34,8 @@ async function run() {
         }
 
         if (!artifactName) {
-            console.log('[WARNING]: \'artifact_name\' action input should not be empty.');
+            console.log('[WARNING]: \'artifact_name\' action input should not be empty. Setting it back to the default name.');
+            artifactName = 'zap_scan';
         }
 
         console.log('starting the program');
