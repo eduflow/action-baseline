@@ -1,6 +1,6 @@
 const core = require('@actions/core');
 const exec = require('@actions/exec');
-const common = require('@zaproxy/actions-common-scans');
+const common = require('@peergrade/actions-common-scans');
 const _ = require('lodash');
 
 // Default file names
