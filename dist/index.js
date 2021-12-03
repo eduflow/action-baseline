@@ -3857,7 +3857,7 @@ async function run() {
                 console.log('Scanning process completed, starting to analyze the results!')
             }
         }
-        await common.main.processReport(token, workspace, plugins, currentRunnerID, issueTitle, repoName, createIssue, { artifactName });
+        await common.main.processReport(token, workspace, plugins, currentRunnerID, issueTitle, repoName, { allowIssueWriting: createIssue,  artifactName });
     } catch (error) {
         core.setFailed(error.message);
     }
@@ -53592,7 +53592,7 @@ const actionHelper = __webpack_require__(989);
 const { DEFAULT_OPTIONS } = __webpack_require__(995);
 
 let actionCommon = {
-    processReport: (async (token, workSpace, plugins, currentRunnerID, issueTitle, repoName, allowIssueWriting = true, { artifactName } = DEFAULT_OPTIONS) => {
+    processReport: (async (token, workSpace, plugins, currentRunnerID, issueTitle, repoName, { allowIssueWriting, artifactName } = DEFAULT_OPTIONS) => {
         let jsonReportName = 'report_json.json';
         let mdReportName = 'report_md.md';
         let htmlReportName = 'report_html.html';
@@ -53678,7 +53678,7 @@ let actionCommon = {
                 }
 
                 if (previousRunnerID !== null) {
-                    previousReport = await actionHelper.readPreviousReport(octokit, owner, repo, workSpace, previousRunnerID, artifactName);
+                    previousReport = await actionHelper.readPreviousReport(octokit, owner, repo, workSpace, previousRunnerID, { artifactName });
                     if (previousReport === undefined) {
                         create_new_issue = true;
                     }
@@ -53768,7 +53768,7 @@ let actionCommon = {
             }
         }
 
-        actionHelper.uploadArtifacts(workSpace, mdReportName, jsonReportName, htmlReportName, artifactName);
+        actionHelper.uploadArtifacts(workSpace, mdReportName, jsonReportName, htmlReportName, { artifactName });
 
     })
 };
@@ -85041,12 +85041,12 @@ let actionHelper = {
 
                 await new Promise(resolve =>
                     request(download.url)
-                        .pipe(fs.createWriteStream(`${workSpace}/{artifactName}.zip`))
+                        .pipe(fs.createWriteStream(`${workSpace}/${artifactName}.zip`))
                         .on('finish', () => {
                             resolve();
                         }));
 
-                let zip = new AdmZip(`${workSpace}/{artifactName}.zip`);
+                let zip = new AdmZip(`${workSpace}/${artifactName}.zip`);
                 let zipEntries = zip.getEntries();
 
                 await zipEntries.forEach(function (zipEntry) {
@@ -85097,7 +85097,8 @@ module.exports = {"$id":"cache.json#","$schema":"http://json-schema.org/draft-06
 
 module.exports = {
     DEFAULT_OPTIONS: {
-        artifactName: 'zap_scan'
+      allowIssueWriting: true,
+      artifactName: 'zap_scan',
     }
 }
 
