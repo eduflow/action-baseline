@@ -3857,7 +3857,7 @@ async function run() {
                 console.log('Scanning process completed, starting to analyze the results!')
             }
         }
-        await common.main.processReport(token, workspace, plugins, currentRunnerID, issueTitle, repoName, createIssue, artifactName);
+        await common.main.processReport(token, workspace, plugins, currentRunnerID, issueTitle, repoName, createIssue, { artifactName });
     } catch (error) {
         core.setFailed(error.message);
     }
@@ -53589,9 +53589,10 @@ const fs = __webpack_require__(747);
 const github = __webpack_require__(469);
 const _ = __webpack_require__(557);
 const actionHelper = __webpack_require__(989);
+const { DEFAULT_OPTIONS } = __webpack_require__(995);
 
 let actionCommon = {
-    processReport: (async (token, workSpace, plugins, currentRunnerID, issueTitle, repoName, allowIssueWriting = true, artifactName = 'zap_scan') => {
+    processReport: (async (token, workSpace, plugins, currentRunnerID, issueTitle, repoName, allowIssueWriting = true, { artifactName } = DEFAULT_OPTIONS) => {
         let jsonReportName = 'report_json.json';
         let mdReportName = 'report_md.md';
         let htmlReportName = 'report_html.html';
@@ -53677,7 +53678,7 @@ let actionCommon = {
                 }
 
                 if (previousRunnerID !== null) {
-                    previousReport = await actionHelper.readPreviousReport(octokit, owner, repo, workSpace, previousRunnerID);
+                    previousReport = await actionHelper.readPreviousReport(octokit, owner, repo, workSpace, previousRunnerID, artifactName);
                     if (previousReport === undefined) {
                         create_new_issue = true;
                     }
@@ -84831,6 +84832,7 @@ const readline = __webpack_require__(58);
 const AdmZip = __webpack_require__(639);
 const request = __webpack_require__(830);
 const artifact = __webpack_require__(214);
+const { DEFAULT_OPTIONS } = __webpack_require__(995);
 
 function createReadStreamSafe(filename, options) {
     return new Promise((resolve, reject) => {
@@ -85010,7 +85012,7 @@ let actionHelper = {
     }),
 
 
-    readPreviousReport: (async (octokit, owner, repo, workSpace, runnerID) => {
+    readPreviousReport: (async (octokit, owner, repo, workSpace, runnerID, { artifactName } = DEFAULT_OPTIONS) => {
         let previousReport;
         try{
             let artifactList = await octokit.actions.listWorkflowRunArtifacts({
@@ -85023,7 +85025,7 @@ let actionHelper = {
             let artifactID;
             if (artifacts.length !== 0) {
                 artifacts.forEach((a => {
-                    if (a['name'] === 'zap_scan') {
+                    if (a['name'] === artifactName) {
                         artifactID = a['id']
                     }
                 }));
@@ -85039,12 +85041,12 @@ let actionHelper = {
 
                 await new Promise(resolve =>
                     request(download.url)
-                        .pipe(fs.createWriteStream(`${workSpace}/zap_scan.zip`))
+                        .pipe(fs.createWriteStream(`${workSpace}/{artifactName}.zip`))
                         .on('finish', () => {
                             resolve();
                         }));
 
-                let zip = new AdmZip(`${workSpace}/zap_scan.zip`);
+                let zip = new AdmZip(`${workSpace}/{artifactName}.zip`);
                 let zipEntries = zip.getEntries();
 
                 await zipEntries.forEach(function (zipEntry) {
@@ -85059,7 +85061,7 @@ let actionHelper = {
         return previousReport;
     }),
 
-    uploadArtifacts: (async (rootDir, mdReport, jsonReport, htmlReport, artifactName = 'zap_scan') => {
+    uploadArtifacts: (async (rootDir, mdReport, jsonReport, htmlReport, { artifactName } = DEFAULT_OPTIONS) => {
         const artifactClient = artifact.create();
         const files = [
             `${rootDir}/${mdReport}`,
@@ -85090,7 +85092,17 @@ module.exports = {"$id":"cache.json#","$schema":"http://json-schema.org/draft-06
 
 /***/ }),
 /* 994 */,
-/* 995 */,
+/* 995 */
+/***/ (function(module) {
+
+module.exports = {
+    DEFAULT_OPTIONS: {
+        artifactName: 'zap_scan'
+    }
+}
+
+
+/***/ }),
 /* 996 */,
 /* 997 */,
 /* 998 */
